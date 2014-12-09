@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Restrict Digital Downloads</title>
+
+<style type="text/css">
+<!--
+a, a:active, a:visited { color: #006666; text-decoration: none; }
+a:hover { color: #00CC99; text-decoration: underline; }
+BODY, P, H1, H2, H3, H4, H5, H6, LI, TD, DD, DT, table {   font-family: Verdana, AvantGarde, Tahoma, Arial, sans-serif; font-size: 10pt; color: black; padding: 0px; margin: 20px; }
+H1, H2, H3, H4 { font-weight: bold; padding-top: 10px; }
+h1 { font-size: 20px; }
+h2 { font-size: 16px; background-color: #bcbcbc; padding: 10px; }
+h3 { font-size: 14px; background-color: #dcdcdc; padding: 5px; }
+h4 { font-size: 12px; border-top: 1px solid #ababab; }
+dt { font-weight: bold; margin-bottom: 0; }
+dd { margin-top: 0; padding-left: 40px; }
+pre { margin-left: 20px; }
+img { margin-left: 20px; max-width: 95%; border: 1px solid #444; }
+ol li { margin-left: 0; }
+table { border-collapse: collapse; }
+.corefile { color: red; }
+.almost { color: blue; }
+.removed { text-decoration: line-through; color: blue; }
+.added { color: green; }
+.osh { color: darkcyan; }
+.minspacing li { margin: 0; }
+ol li, ul li { margin-top: 5px; margin-bottom: 5px; }
+ul li ul { padding-left: 0; }
+.c1 { text-align: center; font-weight: bold; }
+.c3 { vertical-align: top; }
+.o { background-color: #ebebeb; }
+-->
+</style>
+</head>
+
+<body>
+<a name="top" id="top"></a>
+<h1>Restrict Digital Downloads (RDD)</h1>
+<h3>Version 1.0.0 by lat9</h3>
+<p>Current support thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later" target="_blank">www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
+
+<h2>What it does</h2>
+<p>You've got a Zen Cart&reg; store that currently delivers <em>digital downloads</em> to your customers and you'd like to restrict the delivery of those automatic downloads to specific countries.  This plugin (<em>RDD</em>) inspects the <a href="http://en.wikipedia.org/wiki/IPv4" target="_blank" rel="noreferrer">IPv4</a> address of a customer that &quot;arrives&quot; at your store, determines if their IP address is associated with a restricted country and, if so, disables any digital-download product options.</p>
+<p><em>RDD</em> uses the free LITE IP-Country database provided by <a href="http://download.ip2location.com/lite/" target="_blank" rel="noreferrer">ip2location.com</a> that provides &quot;> 98% accuracy&quot;.  The company also has a <a href="http://ip2location.com/databases/db1-ip-country" target="_blank" rel="noreferrer">paid</a> version of the database that has &quot;high data accuracy, more records &amp; customer support&quot;. The free version's license agreement requires that your store include text attributing the use of their database; <em>RDD</em> includes this text in your store's legal and copyright section.</p>
+
+<h2>The Details</h2>
+<h3>Database Changes</h3>
+<p>The first time you access a page in your Zen Cart admin after <a href="#install">installing</a> the admin-level files for this plugin, an initialization script runs that creates the <code>ip2country</code> database table required by <em>RDD</em>.  This table contains three (3) fields for each IP-address range:</p>
+<ol>
+  <li><b>ip_from</b> &hellip; the integer value of the starting IPv4 address for the range.</li>
+  <li><b>ip_to</b> &hellip; the integer value of the ending IPv4 address for the range.</li>
+  <li><b>country_code</b> &hellip; the 2-character ISO code for the country associated with the IPv4 address range.  If the address range is not currently assigned to a country, the value is '- '.</li>
+</ol>
+<h3 id="admin">Admin-Level Changes</h3>
+<p>The <em>RDD</em> admin-level initialization script also enables the <em>Tools-&gt;Update IP2Country</em> page, with which you'll import an <b>IP-Country</b> .csv file.  Simply follow the instructions on the screen, copying and pasting the links to access the download area.</p>
+<img src="update_ip2country.jpg" alt="Update IP2Country Screenshot" />
+<p>When the &quot;IP-Country&quot; information is imported, the tool creates a database entry <em>only if</em> the 2-character ISO country-code for the associated .CSV entry is associated with a country that you wish to restrict or if an IP-address range is unassigned to a country.  You control this list by editing the file <code>/YOUR_ADMIN/includes/extra_datafiles/ip2country_file_database_admin_names.php</code> and changing the value for the <code>IP2COUNTRY_RESTRICTED_COUNTRIES</code> definition.  That value is a packed, comma-separated list that defaults to:</p>
+<pre>define ('IP2COUNTRY_RESTRICTED_COUNTRIES', 'AT,BE,BG,HR,CY,CZ,DK,EE,FI,FR,DE,GR,HU,IE,IT,LV,LT,LU,MT,NL,PL,PT,RO,SK,SI,ES,SE,GB');</pre>
+<p><strong>Note:</strong> The default import will increase the size of your database by approximately 1.5M.</p>
+<h3>Store-Side Changes</h3>
+<p>Within your store's processing, <em>RDD</em> comes into play, by default, on the <code>product_info</code> and <code>product_music_info</code> pages.  If the current customer's IP address is &quot;restricted&quot; and the current product includes a digital-download option, then a message is displayed to the customer and all digital-download options are disabled.</p>
+<p>The image on the left (or top, depending on the width of your display) illustrates the plugin's behavior for a product with a download option on entry to the product's information page.  The other image shows the plugin's response to a &quot;crafty&quot; customer who disables javascript so that the download selection is re-enabled.  Essentially, the plugin prevents the digital-download option (either radio-button, check-box or drop-down menu) for any product to be selected and placed into a customer's cart if the customer's IP address is restricted.</p>
+<img src="product_info_initial.jpg" alt="Initial Product Information Display" />
+<img src="product_info_nojs.jpg" alt="Product Information Download Selected" />
+<p><strong>Note:</strong> <em>RDD</em> uses a jQuery script to disable any download-related product options; the minimum version required is v1.7.0.  If no other version of jQuery is detected, the file <code>/includes/templates/YOUR_TEMPLATE/jscript/jscript_jquery_cdn.js</code> will load jQuery v1.11.1.</p>
+
+<h2 id="install">Installation</h2>
+<ol type="A">
+  <li>Backup both your Zen Cart installation and database &mdash; this plugin will will modify both.</li>
+  <li><strong>Double-check the backup you just created</strong>.  Better safe than sorry!</li>
+  <li>Unzip the plugin's distribution zip-file into a temporary directory.  Rename the &quot;YOUR_TEMPLATE&quot; directory to match your custom template's name:<ol>
+    <li>/includes/templates/YOUR_TEMPLATE</li>
+  </ol> and the &quot;YOUR_ADMIN&quot; directory to match your renamed admin folder.</li>
+  <li>Your best approach for installing <strong>any</strong> new software is to use a local copy for your testing before deploying the changes to your live store. If you must install this directly on your live store, put your store into Maintenance Mode using your admin's Configuration-&gt;Maintenance Mode-&gt;Down for Maintenance setting, first.  You'll then either copy the files to your local installation or use your FTP/SFTP program to copy the files to your hosted store.</li>
+   <li>Check to see if your installation already has the following <span class="almost">template-override</span> file.  If the file is not present, copy the file from the <em>template_default</em> directory; otherwise, use file-merging software to merge this plugin's changes into the file prior to copying:<ol class="minspacing">
+    <li><span class="almost">/includes/templates/YOUR_TEMPLATE/common/tpl_footer.php</span></li>
+  </ol></li>
+  <li>Sign into your Zen Cart admin.</li>
+  <li>Copy the <b>admin-level</b> files to your store:<ol class="minspacing">
+    <li>/YOUR_ADMIN/tools_update_ip2country.php</li>
+    <li>/YOUR_ADMIN/includes/auto_loaders/config.ip2country.php</li>
+    <li>/YOUR_ADMIN/includes/extra_datafiles/ip2country_file_database_admin_names.php</li>
+    <li>/YOUR_ADMIN/includes/init_includes/init_ip2country.php</li>
+    <li>/YOUR_ADMIN/includes/languages/english/tools_update_ip2country.php</li>
+    <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/ip2country_extra_definitions.php</li>
+  </ol></li>
+  <li>Click the <em>Admin Home</em> link in your Zen Cart admin's header.  This causes the plugin's installation script to run, which creates the <code>ip2country</code> database table required by the store-side processing.</li>
+  <li>Copy the store-side files, now that the database table has been created:<ol class="minspacing">
+    <li>/includes/auto_loaders/config.restrict_digital_downloads.php</li>
+    <li>/includes/extra_cart_actions/restrict_digital_downloads.php</li>
+    <li>/includes/extra_datafiles/restrict_digital_downloads_database_names.php</li>
+    <li>/includes/init_includes/init_restrict_digital_downloads.php</li>
+    <li><span class="almost">/includes/templates/YOUR_TEMPLATE/common/tpl_footer.php</span></li>
+    <li>/includes/templates/YOUR_TEMPLATE/jscript/jscript_jquery_cdn.js</li>
+    <li>/includes/templates/YOUR_TEMPLATE/product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+    <li>/includes/templates/YOUR_TEMPLATE/product_music_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+  </ol></li>
+  <li>Import the &quot;IP-Country&quot; information into your database, following the instructions given <a href="#admin">here</a>.</li>
+  <li>Take your store out of "Maintenance Mode".</li>
+</ol>
+
+<h2>Version History:</h2>
+<ul>
+  <li>v1.0.0, 2014-12-09, Initial release.</li>
+</ul>
+
+<h2>Un-install</h2>
+<p>Delete the new catalog and admin files that were previously copied and <em>then</em> run the uninstall_rdd.sql file that comes with this plugin.</p>
+
+</body>
+</html>

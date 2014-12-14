@@ -14,4 +14,4 @@ define ('TEXT_IP2L_INSTRUCTIONS', 'Use this tool to import an IP2Location (www.i
 
 define ('ERROR_NO_FILE_SPECIFIED', 'Please choose a CSV file to be uploaded.');
 define ('ERROR_FILE_NOT_FOUND', 'The file you specified was not found, please try again.');
-define ('MESSAGE_NUM_RECORDS', 'Processing complete. %u records were added to the ' . TABLE_IP2COUNTRY . ' database table in %u seconds.');
+define ('MESSAGE_NUM_RECORDS', 'Processing complete. %u records were added to the ' . TABLE_IP2COUNTRY . ' database table.');

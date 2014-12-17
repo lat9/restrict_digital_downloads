@@ -60,7 +60,7 @@ ul li ul { padding-left: 0; }
 <pre>define ('IP2COUNTRY_RESTRICTED_COUNTRIES', 'AT,BE,BG,HR,CY,CZ,DK,EE,FI,FR,DE,GR,HU,IE,IT,LV,LT,LU,MT,NL,PL,PT,RO,SK,SI,ES,SE,GB');</pre>
 <p><strong>Note:</strong> The default import will increase the size of your database by approximately 1.5M.</p>
 <h3>Store-Side Changes</h3>
-<p>Within your store's processing, <em>RDD</em> comes into play, by default, on the <code>product_info</code> and <code>product_music_info</code> pages.  If the current customer's IP address is &quot;restricted&quot; and the current product includes a digital-download option, then a message is displayed to the customer and all digital-download options are disabled.</p>
+<p>Within your store's processing, <em>RDD</em> comes into play, by default, on the <code>document_general_info</code>, <code>document_product_info</code>, <code>product_info</code> and <code>product_music_info</code> pages.  If the current customer's IP address is &quot;restricted&quot; and the current product includes a digital-download option, then a message is displayed to the customer and all digital-download options are disabled.</p>
 <p>The image on the left (or top, depending on the width of your display) illustrates the plugin's behavior for a product with a download option on entry to the product's information page.  The other image shows the plugin's response to a &quot;crafty&quot; customer who disables javascript so that the download selection is re-enabled.  Essentially, the plugin prevents the digital-download option (either radio-button, check-box or drop-down menu) for any product to be selected and placed into a customer's cart if the customer's IP address is restricted.</p>
 <img src="product_info_initial.jpg" alt="Initial Product Information Display" />
 <img src="product_info_nojs.jpg" alt="Product Information Download Selected" />
@@ -93,6 +93,8 @@ ul li ul { padding-left: 0; }
     <li>/includes/extra_datafiles/restrict_digital_downloads_database_names.php</li>
     <li>/includes/init_includes/init_restrict_digital_downloads.php</li>
     <li><span class="almost">/includes/templates/YOUR_TEMPLATE/common/tpl_footer.php</span></li>
+    <li>/includes/templates/YOUR_TEMPLATE/document_general_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+    <li>/includes/templates/YOUR_TEMPLATE/document_product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
     <li>/includes/templates/YOUR_TEMPLATE/jscript/jscript_jquery_cdn.js</li>
     <li>/includes/templates/YOUR_TEMPLATE/product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
     <li>/includes/templates/YOUR_TEMPLATE/product_music_info/extra_main_template_vars/restrict_digital_downloads.php</li>
@@ -104,8 +106,19 @@ ul li ul { padding-left: 0; }
 <h2>Version History:</h2>
 <ul>
   <li>v1.0.0, 2014-12-09, Initial release.</li>
-  <li>v1.0.1, 2014-xx-77:<ul>
+  <li>v1.0.1, 2014-12-17:<ul>
     <li>BUGFIX: Wrong parameter count on message (/YOUR_ADMIN/includes/languages/english/tools_update_ip2country.php)</li>
+    <li>BUGFIX: Single-value options were not being restricted:<ul>
+      <li>/includes/extra_cart_actions/restrict_digital_downloads.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/{product_type}/extra_main_template_vars/restrict_digital_downloads.php</li>
+    </ul></li>
+    <li>Included support for <em>document_general_info</em> and <em>document_product_info</em> product types:<ul>
+      <li>/includes/templates/YOUR_TEMPLATE/document_general_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/document_product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+    </ul></li>
+    <li>Updated version to v1.0.1:<ul>
+      <li>/YOUR_ADMIN/includes/init_includes/init_ip2country.php</li>
+    </ul></li>
   </ul></li>
 </ul>
 

@@ -1,6 +1,6 @@
 <?php
 // ---------------------------------------------------------------------------
-// Part of the Multiple Shipping Addresses plugin for Zen Cart v1.5.1 and later
+// Part of the Restrict Digital Downloads plugin for Zen Cart v1.5.0 and later
 //
 // Copyright (C) 2014, Vinos de Frutas Tropicales (lat9)
 //
@@ -11,8 +11,8 @@ if (!defined('IS_ADMIN_FLAG')) {
   die('Illegal Access');
 }
 
-define('IP2COUNTRY_CURRENT_VERSION', '1.0.0');
-define('IP2COUNTRY_UPDATE_DATE', '2014-12-09');
+define('IP2COUNTRY_CURRENT_VERSION', '1.0.1');
+define('IP2COUNTRY_UPDATE_DATE', '2014-12-17');
 
 function init_i2l_next_sort($menu_key) {
   global $db;

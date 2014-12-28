@@ -1,16 +1,16 @@
 <?php
 // -----
-// Part of the "Restrict Digital Downloads" plugin by Cindy Merkin (cindy@vinosdefrutastropicales.com)
-// Copyright (c) 2014 Vinos de Frutas Tropicales
+// Part of the "Restrict Digital Downloads" plugin by lat9
+// Copyright (c) 2014 Vinos de Frutas Tropicales (http://vinosdefrutastropicales.com)
 //
 switch ($_GET['action']) {
   /*----
-  ** If a product is being added to the cart and that product includes attributes (the $_POST['id'] array
+  ** If a product is being added to the cart and that (**priced**) product includes attributes (the $_POST['id'] array
   ** is set), then check each of the attributes being added to see if there is a download/virtual product amongst them.  If so,
   ** don't allow the duplicate download/virtual product to be added to the cart ... or just add 1 if this is the original add.
   */
   case 'add_product': {
-    if ($_SESSION['is_restricted_ip'] && isset($_POST['products_id']) && $_POST['cart_quantity'] > 0) {
+    if ($_SESSION['is_restricted_ip'] && isset($_POST['products_id']) && $_POST['cart_quantity'] > 0 && !zen_products_lookup ($_POST['products_id'], 'product_is_free')) {
       $the_options = array ();
       if (isset($_POST['id']) && is_array($_POST['id'])) {
         $the_options = $_POST['id'];

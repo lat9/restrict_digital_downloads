@@ -1,11 +1,12 @@
 <?php
 // -----
-// Part of the "Restrict Digital Downloads" plugin by Cindy Merkin (cindy@vinosdefrutastropicales.com)
-// Copyright (c) 2014 Vinos de Frutas Tropicales
+// Part of the "Restrict Digital Downloads" plugin by lat9
+// Copyright (c) 2014 Vinos de Frutas Tropicales (http://vinosdefrutastropicales.com)
 //
-// NOTE:  $products_options_names, $options_menu and $order_by are previously set by /includes/modules/attributes.php's processing.
+// NOTE:  $products_options_names, $options_menu and $order_by are previously set by /includes/modules/attributes.php's processing; $product_is_free is set by
+//        //included/modules/pages/{product page}/main_template_vars.php's processing.
 //
-if (isset ($_SESSION['is_restricted_ip']) && isset ($products_options_names)) {
+if (!$product_is_free && isset ($_SESSION['is_restricted_ip']) && isset ($products_options_names)) {
   $products_options_names->Move (0);
   $products_options_names->MoveNext ();  //-Rewind the object to the beginning
   

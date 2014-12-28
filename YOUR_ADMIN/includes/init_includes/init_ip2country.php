@@ -11,8 +11,8 @@ if (!defined('IS_ADMIN_FLAG')) {
   die('Illegal Access');
 }
 
-define('IP2COUNTRY_CURRENT_VERSION', '1.0.1');
-define('IP2COUNTRY_UPDATE_DATE', '2014-12-17');
+define('IP2COUNTRY_CURRENT_VERSION', '1.0.2');
+define('IP2COUNTRY_UPDATE_DATE', '2014-12-28');
 
 function init_i2l_next_sort($menu_key) {
   global $db;

@@ -38,7 +38,7 @@ ul li ul { padding-left: 0; }
 <body>
 <a name="top" id="top"></a>
 <h1>Restrict Digital Downloads (RDD)</h1>
-<h3>Version 1.0.2 by lat9</h3>
+<h3>Version 1.1.0 by lat9</h3>
 <p>Current support thread at via the Zen Cart forums: <a href="http://www.zen-cart.com/showthread.php?215524-Restrict-Digital-Downloads-Support-Thread" target="_blank">http://www.zen-cart.com/showthread.php?215524-Restrict-Digital-Downloads-Support-Thread</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
 <h2>What it does</h2>
@@ -59,6 +59,12 @@ ul li ul { padding-left: 0; }
 <p>When the &quot;IP-Country&quot; information is imported, the tool creates a database entry <em>only if</em> the 2-character ISO country-code for the associated .CSV entry is associated with a country that you wish to restrict or if an IP-address range is unassigned to a country.  You control this list by editing the file <code>/YOUR_ADMIN/includes/extra_datafiles/ip2country_file_database_admin_names.php</code> and changing the value for the <code>IP2COUNTRY_RESTRICTED_COUNTRIES</code> definition.  That value is a packed, comma-separated list that defaults to:</p>
 <pre>define ('IP2COUNTRY_RESTRICTED_COUNTRIES', 'AT,BE,BG,HR,CY,CZ,DK,EE,FI,FR,DE,GR,HU,IE,IT,LV,LT,LU,MT,NL,PL,PT,RO,SK,SI,ES,SE,GB');</pre>
 <p><strong>Note:</strong> The default import will increase the size of your database by approximately 1.5M.</p>
+<p>Once you've imported the ip2country information, you can use the form at the bottom of the page to display information about a specific IP address.  Enter the IPv4 address and click the &quot;Submit&quot; button, a message will be displayed indicating one of:</p>
+<ul>
+  <li>The IP address was not a valid IPv4 address.</li>
+  <li>The IP address is <b>not</b> restricted in the database.</li>
+  <li>The IP address is restricted in the database.</li>
+</ul>
 <h3>Store-Side Changes</h3>
 <p>Within your store's processing, <em>RDD</em> comes into play, by default, on the <code>document_general_info</code>, <code>document_product_info</code>, <code>product_info</code> and <code>product_music_info</code> pages.  If the current customer's IP address is &quot;restricted&quot; and the current product includes a digital-download option, then a message is displayed to the customer and all digital-download options are disabled.</p>
 <p>The image on the left (or top, depending on the width of your display) illustrates the plugin's behavior for a product with a download option on entry to the product's information page.  The other image shows the plugin's response to a &quot;crafty&quot; customer who disables javascript so that the download selection is re-enabled.  Essentially, the plugin prevents the digital-download option (either radio-button, check-box or drop-down menu) for any product to be selected and placed into a customer's cart if the customer's IP address is restricted.</p>
@@ -128,10 +134,23 @@ ul li ul { padding-left: 0; }
       <li>/includes/init_includes/init_restrict_digital_downloads.php</li>
       <li>/includes/extra_cart_actions/restrict_digital_downloads.php</li>
       <li>/includes/templates/YOUR_TEMPLATE/document_general_info/extra_main_template_vars/restrict_digital_downloads.php</li>
-        <li>/includes/templates/YOUR_TEMPLATE/document_product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
-        <li>/includes/templates/YOUR_TEMPLATE/product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
-        <li>/includes/templates/YOUR_TEMPLATE/product_music_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/document_product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/product_music_info/extra_main_template_vars/restrict_digital_downloads.php</li>
       <li>/YOUR_ADMIN/includes/init_includes/init_ip2country.php</li>
+    </ul></li>
+  </ul></li>
+  <li>v1.1.0, 2015-04-05:<ul>
+    <li>CHANGE: Add ability to check an IP address within the admin tool.</li>
+    <li>BUGFIX: If the digital download is the default selection for a radio-button option, no button was selected when RDD is active.</li>
+    <li>The following files were changed:<ul>
+      <li>/includes/templates/YOUR_TEMPLATE/document_general_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/document_product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/product_music_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+      <li>/YOUR_ADMIN/tools_update_ip2country.php</li>
+      <li>/YOUR_ADMIN/includes/init_includes/init_ip2country.php</li>
+      <li>/YOUR_ADMIN/includes/languages/english/tools_update_ip2country.php</li>
     </ul></li>
   </ul></li>
 </ul>

@@ -2,7 +2,7 @@
 // ---------------------------------------------------------------------------
 // Part of the Restrict Digital Downloads plugin for Zen Cart v1.5.0 and later
 //
-// Copyright (C) 2014, Vinos de Frutas Tropicales (lat9)
+// Copyright (C) 2014-2015, Vinos de Frutas Tropicales (lat9)
 //
 // @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
 // ---------------------------------------------------------------------------
@@ -11,8 +11,8 @@ if (!defined('IS_ADMIN_FLAG')) {
   die('Illegal Access');
 }
 
-define('IP2COUNTRY_CURRENT_VERSION', '1.0.2');
-define('IP2COUNTRY_UPDATE_DATE', '2014-12-28');
+define('IP2COUNTRY_CURRENT_VERSION', '1.1.0');
+define('IP2COUNTRY_UPDATE_DATE', '2015-04-05');
 
 function init_i2l_next_sort($menu_key) {
   global $db;

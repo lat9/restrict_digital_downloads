@@ -15,3 +15,9 @@ define ('TEXT_IP2L_INSTRUCTIONS', 'Use this tool to import an IP2Location (www.i
 define ('ERROR_NO_FILE_SPECIFIED', 'Please choose a CSV file to be uploaded.');
 define ('ERROR_FILE_NOT_FOUND', 'The file you specified was not found, please try again.');
 define ('MESSAGE_NUM_RECORDS', 'Processing complete. %u records were added to the ' . TABLE_IP2COUNTRY . ' database table.');
+
+define ('TEXT_IP_ADDRESS_INSTRUCTIONS', 'Once you\'ve imported the database, use the form below to see if a specific IPv4 address will be restricted.');
+define ('LABEL_IP_ADDRESS', 'IP Address: ');
+define ('ERROR_INVALID_IP_ADDRESS', 'The IP Address you entered is not valid, please re-enter the value.');
+define ('MESSAGE_IP_ADDRESS_STATUS', 'The IP Address you entered (%1$s) is %2$s restricted.');  //-%1$s is the IP Address, %2$s contains either '' or the following
+define ('MESSAGE_IP_ADDRESS_NOT_RESTRICTED', '<b>not</b>');

@@ -14,57 +14,81 @@ if (!defined('IS_ADMIN_FLAG')) {
 }
 
 define ('IP2COUNTRY_BLOCK_SIZE', 1000);
+$ip_address_message = '';
 if (isset ($_POST['action'])) {
-  if (!(isset ($_FILES['csv_file']) && isset ($_FILES['csv_file']['tmp_name']) && $_FILES['csv_file']['tmp_name'] != '')) {
-    $messageStack->add (ERROR_NO_FILE_SPECIFIED);
-    
-  } else {
-    if (!file_exists ($_FILES['csv_file']['tmp_name'])) {
-      $messageStack->add (ERROR_FILE_NOT_FOUND);
-      
-    } else {
-      $num_records = 0;
-      ini_set ('auto_detect_line_endings', TRUE);
-      $handle = fopen ($_FILES['csv_file']['tmp_name'], 'r');
-      if ($handle === false) {
-        $messageStack->add (ERROR_OPENING_FILE);
+  switch ($_POST['action']) {
+    case 'update': {
+      if (!(isset ($_FILES['csv_file']) && isset ($_FILES['csv_file']['tmp_name']) && $_FILES['csv_file']['tmp_name'] != '')) {
+        $messageStack->add (ERROR_NO_FILE_SPECIFIED);
         
       } else {
-        $db->Execute ("TRUNCATE " . TABLE_IP2COUNTRY);
-        $search_string = IP2COUNTRY_RESTRICTED_COUNTRIES . ',-';
-        $entry_count = 0;
-        $values = '';
-        while ( ($data = fgetcsv ($handle) ) !== FALSE ) {
-          $num_fields = count ($data);
-          if ($num_fields >= 3) {
-            if (strpos ($search_string, $data[2]) !== false) {
-              $values .= ("( '" . $data[0] . "', '" . $data[1] . "', '" . $data[2] . "'), ");
-              $entry_count++;
-              $num_records++;
-              if ($entry_count == IP2COUNTRY_BLOCK_SIZE) {
-                $db->Execute ("INSERT INTO " . TABLE_IP2COUNTRY . " (ip_from, ip_to, country_code) VALUES " . substr ($values, 0, -2));
-                $entry_count = 0;
-                $values = '';
-                
-              }              
-            }            
+        if (!file_exists ($_FILES['csv_file']['tmp_name'])) {
+          $messageStack->add (ERROR_FILE_NOT_FOUND);
+          
+        } else {
+          $num_records = 0;
+          ini_set ('auto_detect_line_endings', TRUE);
+          $handle = fopen ($_FILES['csv_file']['tmp_name'], 'r');
+          if ($handle === false) {
+            $messageStack->add (ERROR_OPENING_FILE);
+            
+          } else {
+            $db->Execute ("TRUNCATE " . TABLE_IP2COUNTRY);
+            $search_string = IP2COUNTRY_RESTRICTED_COUNTRIES . ',-';
+            $entry_count = 0;
+            $values = '';
+            while ( ($data = fgetcsv ($handle) ) !== FALSE ) {
+              $num_fields = count ($data);
+              if ($num_fields >= 3) {
+                if (strpos ($search_string, $data[2]) !== false) {
+                  $values .= ("( '" . $data[0] . "', '" . $data[1] . "', '" . $data[2] . "'), ");
+                  $entry_count++;
+                  $num_records++;
+                  if ($entry_count == IP2COUNTRY_BLOCK_SIZE) {
+                    $db->Execute ("INSERT INTO " . TABLE_IP2COUNTRY . " (ip_from, ip_to, country_code) VALUES " . substr ($values, 0, -2));
+                    $entry_count = 0;
+                    $values = '';
+                    
+                  }              
+                }            
+              }
+            }
+            if ($values != '') {
+              $db->Execute ("INSERT INTO " . TABLE_IP2COUNTRY . " (ip_from, ip_to, country_code) VALUES " . substr ($values, 0, -2));
+              
+            }
+            $messageStack->add_session (sprintf (MESSAGE_NUM_RECORDS, $num_records), 'success');
+            fclose ($handle);
+            
+          }
+          ini_set ('auto_detect_line_endings', FALSE);
+          
+          if ($num_records > 0) {
+            $db->Execute ("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = '" . date ('Y-m-d H:i:s') . "' WHERE configuration_key = 'MODULE_IP2COUNTRY_LAST_UPDATE' LIMIT 1");
+            zen_redirect (zen_href_link (FILENAME_TOOLS_UPDATE_IP2COUNTRY));
+            
           }
         }
-        if ($values != '') {
-          $db->Execute ("INSERT INTO " . TABLE_IP2COUNTRY . " (ip_from, ip_to, country_code) VALUES " . substr ($values, 0, -2));
-          
-        }
-        $messageStack->add_session (sprintf (MESSAGE_NUM_RECORDS, $num_records), 'success');
-        fclose ($handle);
+      }
+      break;
+    }
+    case 'find': {
+      $ipv4_address_check = filter_var ($_POST['ip_address'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+      if (!$ipv4_address_check) {
+        $ip_address_message = ERROR_INVALID_IP_ADDRESS;
+        
+      } else {
+        $ipv4_quads = explode ('.', $_POST['ip_address']);
+        $ipv4_integer = $ipv4_quads[3] + $ipv4_quads[2] * 256 + $ipv4_quads[1] * 256 * 256 + $ipv4_quads[0] * 256 * 256 * 256;
+        
+        $ipv4_check = $db->Execute ("SELECT * FROM " . TABLE_IP2COUNTRY . " WHERE ip_from <= $ipv4_integer AND ip_to >= $ipv4_integer LIMIT 1");
+        $ip_address_message = sprintf (MESSAGE_IP_ADDRESS_STATUS, $_POST['ip_address'], (($ipv4_check->EOF) ? MESSAGE_IP_ADDRESS_NOT_RESTRICTED : ''));
         
       }
-      ini_set ('auto_detect_line_endings', FALSE);
-      
-      if ($num_records > 0) {
-        $db->Execute ("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = '" . date ('Y-m-d H:i:s') . "' WHERE configuration_key = 'MODULE_IP2COUNTRY_LAST_UPDATE' LIMIT 1");
-        zen_redirect (zen_href_link (FILENAME_TOOLS_UPDATE_IP2COUNTRY));
-        
-      }
+      break;
+    }
+    default: {
+      break;
     }
   }
 }
@@ -100,6 +124,7 @@ input[type=text].date { width: auto; }
 .centered { text-align: center; }
 .smaller { font-size: smaller; }
 .disabled { color: red; }
+#submit_find { width: 100px; }
 -->
 </style>
 <script type="text/javascript" src="includes/menu.js"></script>
@@ -147,6 +172,15 @@ $last_updated = MODULE_IP2COUNTRY_LAST_UPDATE;
           </tr>
         </table></form></td>
       </tr>
+      
+      <tr><td><hr /></td></tr>
+      <tr>
+        <td><?php echo TEXT_IP_ADDRESS_INSTRUCTIONS; ?></td>
+      </tr>
+      <tr>
+        <td><?php echo zen_draw_form ('enter_ip', FILENAME_TOOLS_UPDATE_IP2COUNTRY, '', 'post') . zen_draw_hidden_field ('action', 'find') . LABEL_IP_ADDRESS . zen_draw_input_field ('ip_address', '', 'id="submit_find"') . '&nbsp;&nbsp;&nbsp;' . zen_image_submit ('button_submit.gif', IMAGE_SUBMIT) . '&nbsp;&nbsp;' . $ip_address_message; ?></form></td>
+      </tr>
+      
     </table></td>
 <!-- body_text_eof //-->
 

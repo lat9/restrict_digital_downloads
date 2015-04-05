@@ -1,12 +1,11 @@
 <?php
 // -----
-// Part of the "Restrict Digital Downloads" plugin by lat9
-// Copyright (c) 2014 Vinos de Frutas Tropicales (http://vinosdefrutastropicales.com)
+// Part of the "Restrict Digital Downloads" plugin by Cindy Merkin (cindy@vinosdefrutastropicales.com)
+// Copyright (c) 2014-2015 Vinos de Frutas Tropicales
 //
-// NOTE:  $products_options_names, $options_menu and $order_by are previously set by /includes/modules/attributes.php's processing; $product_is_free is set by
-//        //included/modules/pages/{product page}/main_template_vars.php's processing.
+// NOTE:  $products_options_names, $options_menu and $order_by are previously set by /includes/modules/attributes.php's processing.
 //
-if (!$product_is_free && isset ($_SESSION['is_restricted_ip']) && isset ($products_options_names)) {
+if (isset ($_SESSION['is_restricted_ip']) && isset ($products_options_names)) {
   $products_options_names->Move (0);
   $products_options_names->MoveNext ();  //-Rewind the object to the beginning
   
@@ -54,7 +53,7 @@ if (!$product_is_free && isset ($_SESSION['is_restricted_ip']) && isset ($produc
     $products_options_names->MoveNext ();
     
   }
-  if ($downloads_present != '') {
+  if ($downloads_present) {
     $messageStack->add ('product_info', PRODUCT_MESSAGE_DOWNLOAD_PRODUCT_RESTRICTED, 'caution');
     
   }
@@ -66,6 +65,11 @@ $(document).on ('ready', function(){
   $('<?php echo $download_selectors; ?>').each(function(){
     $(this).removeAttr( 'selected checked' );
     $(this).attr( 'disabled', 'disabled' );
+    if ($(this).is( 'input' )) {
+      var radioName = $(this).prop( 'name' );
+      $(this).siblings('input[name="'+radioName+'"]').eq(0).prop( 'checked', true );
+
+    }
   });
 });
 </script>

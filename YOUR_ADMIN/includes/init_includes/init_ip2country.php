@@ -12,7 +12,7 @@ if (!defined('IS_ADMIN_FLAG')) {
 }
 
 define('IP2COUNTRY_CURRENT_VERSION', '1.1.0');
-define('IP2COUNTRY_UPDATE_DATE', '2015-04-05');
+define('IP2COUNTRY_UPDATE_DATE', '2015-04-06');
 
 function init_i2l_next_sort($menu_key) {
   global $db;

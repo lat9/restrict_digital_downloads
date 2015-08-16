@@ -11,8 +11,8 @@ if (!defined('IS_ADMIN_FLAG')) {
   die('Illegal Access');
 }
 
-define('IP2COUNTRY_CURRENT_VERSION', '1.1.0');
-define('IP2COUNTRY_UPDATE_DATE', '2015-04-06');
+define('IP2COUNTRY_CURRENT_VERSION', '1.1.1');
+define('IP2COUNTRY_UPDATE_DATE', '2015-08-16');
 
 function init_i2l_next_sort($menu_key) {
   global $db;
@@ -44,9 +44,17 @@ if (!defined('MODULE_IP2COUNTRY_VERSION')) {
 }
 
 // -----
+// Add a hidden configuration value that identifies whether or not the last IP2LOCATION import restricted "unassigned" IP address blocks.
+//
+if (!defined ('MODULE_IP2COUNTRY_UNASSIGNED_RESTRICTED')) {
+  $db->Execute("INSERT INTO " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('IP2COUNTRY: Restrict Unassigned Ranges', 'MODULE_IP2COUNTRY_UNASSIGNED_RESTRICTED', '1', 'The value is set to 1 if the last IP2COUNTRY import restricted \"Unassigned\" IP Address ranges.', '6', '103', now())");
+  
+}
+
+// -----
 // Update the configuration table to reflect the current version, if it's not already set.
 //
-if (MODULE_IP2COUNTRY_VERSION != IP2COUNTRY_CURRENT_VERSION) {
+if (MODULE_IP2COUNTRY_VERSION != IP2COUNTRY_CURRENT_VERSION || MODULE_IP2COUNTRY_RELEASE_DATE != IP2COUNTRY_UPDATE_DATE) {
   $db->Execute ("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = '" . IP2COUNTRY_CURRENT_VERSION . "' WHERE configuration_key = 'MODULE_IP2COUNTRY_VERSION'");
   $db->Execute ("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = '" . IP2COUNTRY_UPDATE_DATE . "' WHERE configuration_key = 'MODULE_IP2COUNTRY_RELEASE_DATE'");
   

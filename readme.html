@@ -38,7 +38,7 @@ ul li ul { padding-left: 0; }
 <body>
 <a name="top" id="top"></a>
 <h1>Restrict Digital Downloads (RDD)</h1>
-<h3>Version 1.1.0 by lat9</h3>
+<h3>Version 1.1.1 by lat9</h3>
 <p>Current support thread at via the Zen Cart forums: <a href="http://www.zen-cart.com/showthread.php?215524-Restrict-Digital-Downloads-Support-Thread" target="_blank">http://www.zen-cart.com/showthread.php?215524-Restrict-Digital-Downloads-Support-Thread</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
 <h2>What it does</h2>
@@ -151,6 +151,15 @@ ul li ul { padding-left: 0; }
       <li>/includes/templates/YOUR_TEMPLATE/document_product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
       <li>/includes/templates/YOUR_TEMPLATE/product_info/extra_main_template_vars/restrict_digital_downloads.php</li>
       <li>/includes/templates/YOUR_TEMPLATE/product_music_info/extra_main_template_vars/restrict_digital_downloads.php</li>
+      <li>/YOUR_ADMIN/tools_update_ip2country.php</li>
+      <li>/YOUR_ADMIN/includes/init_includes/init_ip2country.php</li>
+      <li>/YOUR_ADMIN/includes/languages/english/tools_update_ip2country.php</li>
+    </ul></li>
+  </ul></li>
+  <li>v1.1.1, 2015-08-16:<ul>
+    <li>CHANGE: Include an IP address' IPv4 &quot;integer&quot; calculation in the IP address test form's output.</li>
+    <li>CHANGE: Add a configuration setting to allow sites to choose whether or not to restrict the &quot;Not Assigned&quot; IP addresses.</li>
+    <li>The following files were changed:<ul>
       <li>/YOUR_ADMIN/tools_update_ip2country.php</li>
       <li>/YOUR_ADMIN/includes/init_includes/init_ip2country.php</li>
       <li>/YOUR_ADMIN/includes/languages/english/tools_update_ip2country.php</li>

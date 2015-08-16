@@ -2,7 +2,7 @@
 // ---------------------------------------------------------------------------
 // Part of the IP2Country support needed for the "Restrict Digital Downloads" plugin
 //
-// Copyright (C) 2014, Vinos de Frutas Tropicales (lat9)
+// Copyright (C) 2014-2015, Vinos de Frutas Tropicales (lat9)
 //
 // @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
 // ---------------------------------------------------------------------------
@@ -34,7 +34,11 @@ if (isset ($_POST['action'])) {
             
           } else {
             $db->Execute ("TRUNCATE " . TABLE_IP2COUNTRY);
-            $search_string = IP2COUNTRY_RESTRICTED_COUNTRIES . ',-';
+            $search_string = IP2COUNTRY_RESTRICTED_COUNTRIES;
+            if (isset ($_POST['restrict_unassigned'])) {
+              $search_string .= ',-';
+              
+            }
             $entry_count = 0;
             $values = '';
             while ( ($data = fgetcsv ($handle) ) !== FALSE ) {
@@ -64,6 +68,7 @@ if (isset ($_POST['action'])) {
           ini_set ('auto_detect_line_endings', FALSE);
           
           if ($num_records > 0) {
+            $db->Execute ("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = '" . ((isset ($_POST['restrict_unassigned'])) ? '1' : '0') . "' WHERE configuration_key = 'MODULE_IP2COUNTRY_UNASSIGNED_RESTRICTED' LIMIT 1");
             $db->Execute ("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = '" . date ('Y-m-d H:i:s') . "' WHERE configuration_key = 'MODULE_IP2COUNTRY_LAST_UPDATE' LIMIT 1");
             zen_redirect (zen_href_link (FILENAME_TOOLS_UPDATE_IP2COUNTRY));
             
@@ -82,7 +87,7 @@ if (isset ($_POST['action'])) {
         $ipv4_integer = $ipv4_quads[3] + $ipv4_quads[2] * 256 + $ipv4_quads[1] * 256 * 256 + $ipv4_quads[0] * 256 * 256 * 256;
         
         $ipv4_check = $db->Execute ("SELECT * FROM " . TABLE_IP2COUNTRY . " WHERE ip_from <= $ipv4_integer AND ip_to >= $ipv4_integer LIMIT 1");
-        $ip_address_message = sprintf (MESSAGE_IP_ADDRESS_STATUS, $_POST['ip_address'], (($ipv4_check->EOF) ? MESSAGE_IP_ADDRESS_NOT_RESTRICTED : ''));
+        $ip_address_message = sprintf (MESSAGE_IP_ADDRESS_STATUS, $_POST['ip_address'], $ipv4_integer, (($ipv4_check->EOF) ? MESSAGE_IP_ADDRESS_NOT_RESTRICTED : ''));
         
       }
       break;
@@ -149,6 +154,7 @@ function init() {
 <!-- body //-->
 <?php
 $last_updated = MODULE_IP2COUNTRY_LAST_UPDATE;
+$unassigned_restricted = (MODULE_IP2COUNTRY_UNASSIGNED_RESTRICTED == '1') ? '' : MESSAGE_IP_ADDRESS_NOT_RESTRICTED;
 ?>
 <table border="0" width="100%" cellspacing="2" cellpadding="2">
   <tr>
@@ -163,10 +169,13 @@ $last_updated = MODULE_IP2COUNTRY_LAST_UPDATE;
       </tr>
 
       <tr>
-        <td><?php echo TEXT_IP2L_INSTRUCTIONS; ?></td>
+        <td><?php echo sprintf (TEXT_IP2L_INSTRUCTIONS, $unassigned_restricted); ?></td>
       </tr>
       <tr>
         <td><?php echo zen_draw_form ('choose_csv', FILENAME_TOOLS_UPDATE_IP2COUNTRY, '', 'post', 'enctype="multipart/form-data"') . zen_draw_hidden_field ('action', 'update'); ?><table width="100%">
+          <tr>
+            <td><?php echo '<b>' . LABEL_RESTRICT_UNASSIGNED . '</b>&nbsp;&nbsp;' . zen_draw_checkbox_field ('restrict_unassigned', '', (MODULE_IP2COUNTRY_UNASSIGNED_RESTRICTED == '1')); ?></td>
+          </tr>
           <tr>
             <td><?php /*<input type="hidden" name="MAX_FILE_SIZE" value="30000" />*/?><?php echo zen_draw_file_field ('csv_file') . '&nbsp;&nbsp;&nbsp;' . zen_image_submit ('button_upload.gif', IMAGE_UPLOAD); ?></td>
           </tr>
